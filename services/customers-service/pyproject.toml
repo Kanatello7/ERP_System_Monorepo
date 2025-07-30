@@ -1,0 +1,8 @@
+[tool.poetry]
+name = "customers-service"
+version = "0.1.0"
+packages = [{ include = "app" }]
+
+[tool.poetry.dependencies]
+python           = "^3.10"
+erp-shared-lib   = { path = "../../shared_lib", develop = true }

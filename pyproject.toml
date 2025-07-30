@@ -1,0 +1,24 @@
+[tool.poetry]                      
+name        = "erp-system"
+version     = "0.0.0"
+description = "Aggregator for all ERP services"
+authors     = ["Kanatello7 <jetrukanatello@gmail.com>"]
+license     = "Proprietary"
+
+[tool.poetry.dependencies]           
+python          = "^3.10"
+fastapi         = "^0.111"
+sqlalchemy      = "^2.0"
+psycopg2-binary = "^2.9"
+pydantic        = "^2.7"
+asyncpg         = "^0.28"
+
+
+erp-shared-lib      = { path = "shared_lib",           develop = true }
+products-service    = { path = "services/products-service",   develop = true }
+customers-service   = { path = "services/customers-service",  develop = true }
+
+
+[build-system]                      
+requires = ["poetry-core>=2.0.0"]
+build-backend = "poetry.core.masonry.api"

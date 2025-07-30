@@ -1,0 +1,13 @@
+# виртуальные окружения
+.venv/
+.env 
+# build‑артефакты Python
+build/
+dist/
+*.egg-info/
+
+# editable‑инсталляции
+__editable__*
+
+# кэш байткода
+__pycache__/
