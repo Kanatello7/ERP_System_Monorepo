@@ -1,58 +1,74 @@
 version: "3.9"
 
 services:
-  # ───────────────────────────────────────────────────────── customers
+  # ─────────────────────────────── customers DB
   customers-db:
     image: postgres:16
     environment:
-      POSTGRES_USER:     ${CUSTOMERS_DB_USER}
-      POSTGRES_PASSWORD: ${CUSTOMERS_DB_PASSWORD}
-      POSTGRES_DB:       ${CUSTOMERS_DB_NAME}
+      POSTGRES_USER:     ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB:       ${DB_NAME}
     volumes:
       - customers_db_data:/var/lib/postgresql/data
 
+  # ─────────────────────────────── customers API
   customers-service:
     build:
-      context: .
+      context: .               
       dockerfile: services/customers_service/Dockerfile
     env_file: .env
     environment:
-      DB_HOST: customers-db          # DNS-имя сервиса в сети Compose
+      DB_HOST: customers-db
       DB_PORT: 5432
-      DB_USER:     ${CUSTOMERS_DB_USER}
-      DB_PASSWORD: ${CUSTOMERS_DB_PASSWORD}
-      DB_NAME:     ${CUSTOMERS_DB_NAME}
+      DB_USER:     ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME:     ${DB_NAME}
       CORS_ORIGINS: ${CORS_ORIGINS}
     depends_on: [customers-db]
     ports:
-      - "8001:8000"                  # host → container
+      - "8001:8000"        # HOST → контейнер
 
-  # ───────────────────────────────────────────────────────── products
+  # ─────────────────────────────── products DB
   products-db:
     image: postgres:16
     environment:
-      POSTGRES_USER:     ${PRODUCTS_DB_USER}
-      POSTGRES_PASSWORD: ${PRODUCTS_DB_PASSWORD}
-      POSTGRES_DB:       ${PRODUCTS_DB_NAME}
+      POSTGRES_USER:     ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB:       ${DB_NAME}
     volumes:
       - products_db_data:/var/lib/postgresql/data
 
+  # ─────────────────────────────── products API
   products-service:
     build:
-      context: .
+      context: .             
       dockerfile: services/products_service/Dockerfile
     env_file: .env
     environment:
       DB_HOST: products-db
       DB_PORT: 5432
-      DB_USER:     ${PRODUCTS_DB_USER}
-      DB_PASSWORD: ${PRODUCTS_DB_PASSWORD}
-      DB_NAME:     ${PRODUCTS_DB_NAME}
+      DB_USER:     ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME:     ${DB_NAME}
       CORS_ORIGINS: ${CORS_ORIGINS}
     depends_on: [products-db]
     ports:
       - "8002:8000"
 
+  # ─────────────────────────────── frontend (React+Vite → nginx)
+  frontend:
+    build:
+      context: ./frontend          
+      dockerfile: Dockerfile
+      args:                        
+        VITE_PRODUCTS_URL:  http://localhost:8002
+        VITE_CUSTOMERS_URL: http://localhost:8001
+    depends_on:
+      - customers-service
+      - products-service
+    ports:
+      - "5173:80"                  # HOST:5173 → nginx :80
+  
 volumes:
   customers_db_data:
   products_db_data:

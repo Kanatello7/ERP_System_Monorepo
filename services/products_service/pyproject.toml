@@ -4,6 +4,10 @@ version = "0.1.0"
 packages = [{ include = "app" }]
 
 [tool.poetry.dependencies]
-python           = "^3.10"
-erp-shared-lib   = { path = "../../shared_lib", develop = true }
-
+python = "^3.10"
+erp-shared-lib = { path = "../../shared_lib", develop = true }
+alembic = "^1.16.4"
+pydantic-settings = "^2.10.1"     
+fastapi = "^0.111"                
+sqlalchemy = "^2.0"
+asyncpg = "^0.29"
