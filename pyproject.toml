@@ -15,9 +15,13 @@ asyncpg         = "^0.28"
 
 
 erp-shared-lib      = { path = "shared_lib",           develop = true }
-products-service    = { path = "services/products-service",   develop = true }
-customers-service   = { path = "services/customers-service",  develop = true }
+products-service    = { path = "services/products_service",   develop = true }
+customers-service   = { path = "services/customers_service",  develop = true }
+pydantic-settings = "^2.10.1"
 
+
+[tool.poetry.group.dev.dependencies]
+alembic = "^1.16.4"
 
 [build-system]                      
 requires = ["poetry-core>=2.0.0"]
