@@ -1,8 +1,8 @@
 from typing import List
-
 from ..repositories.utils import AbstractRepository
 from ..schemas.schemas import CustomerAdd, CustomerUpdate, CustomerRead
 from shared_lib.universal_table import UniversalTable
+
 
 TABLE_SCHEMA = {
     "id":         ("ID",        "number"),
@@ -27,17 +27,17 @@ class CustomerService:
         row = await self.customer_repo.get_one(id)
         return CustomerRead.model_validate(row) if row else None
 
-    async def add_one(self, product: CustomerAdd) -> CustomerRead:
-        row = await self.customer_repo.add_one(product.model_dump())
+    async def add_one(self, customer: CustomerAdd) -> CustomerRead:
+        row = await self.customer_repo.add_one(customer.model_dump())
         return CustomerRead.model_validate(row)
 
-    async def update_one(self, id: int, new_product: CustomerUpdate) -> CustomerRead | None:
-        row = await self.customer_repo.update_one(id, new_product.model_dump(exclude_unset=True))
+    async def update_one(self, id: int, new_customer: CustomerUpdate) -> CustomerRead | None:
+        row = await self.customer_repo.update_one(id, new_customer.model_dump(exclude_unset=True))
         return CustomerRead.model_validate(row) if row else None
 
     async def delete_one(self, id: int) -> None:
         await self.customer_repo.delete_one(id)
     
     async def universal_table(self) -> UniversalTable:
-        products = await self.customer_repo.get_all()
-        return UniversalTable.from_instances(products, TABLE_SCHEMA)
+        customers = await self.customer_repo.get_all()
+        return UniversalTable.from_instances(customers, TABLE_SCHEMA)

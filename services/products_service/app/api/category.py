@@ -21,6 +21,7 @@ async def list_categories(service: CategoryServiceDep):
 @router.post("", response_model=CategoryRead, status_code=status.HTTP_201_CREATED)
 async def add_category(category: CategoryAdd, service: CategoryServiceDep):
     return await service.add_one(category)
+    
 
 @router.get("/{category_id}", response_model=CategoryRead)
 async def get_category(category_id: int, service: CategoryServiceDep):

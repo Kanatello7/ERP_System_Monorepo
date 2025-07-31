@@ -1,14 +1,19 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, status 
+from fastapi import APIRouter, Depends, HTTPException, status
 
 from .dependencies import customer_service
 from ..services.customer import CustomerService
 from ..schemas.schemas import CustomerAdd, CustomerUpdate, CustomerRead
+
+
 from shared_lib.universal_table import UniversalTable
+
 
 router = APIRouter(prefix="/customers", tags=['customers'])
 CustomerServiceDep = Annotated[CustomerService, Depends(customer_service)]
+
+
 
 @router.get("/table", response_model=UniversalTable)
 async def customers_table(service: CustomerServiceDep):

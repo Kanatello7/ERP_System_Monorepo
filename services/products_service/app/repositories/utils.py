@@ -1,6 +1,10 @@
 from abc import ABC, abstractmethod
 from sqlalchemy import select, insert, delete, update
+from sqlalchemy.exc import IntegrityError
+
 from app.core.database import async_session_maker, AsyncSession
+from .exceptions import DuplicateKeyError
+
 
 class AbstractRepository(ABC):
  
@@ -40,17 +44,30 @@ class SQLAlchemyRepository(AbstractRepository):
     async def add_one(self, data: dict):
         obj = self.model(**data)
         self.session.add(obj)
-        await self.session.commit()
+        try:
+            await self.session.commit()
+            
+        except IntegrityError as exc:
+            await self.session.rollback()
+            raise DuplicateKeyError from exc
+        
         await self.session.refresh(obj)
-        return obj
+        return obj 
 
     async def update_one(self, id: int, data: dict):
         obj = await self.session.get(self.model, id)
         if not obj:
             return None
+
         for k, v in data.items():
             setattr(obj, k, v)
-        await self.session.commit()
+
+        try:
+            await self.session.commit()
+        except IntegrityError as exc:
+            await self.session.rollback()
+            raise DuplicateKeyError from exc
+
         await self.session.refresh(obj)
         return obj
 
