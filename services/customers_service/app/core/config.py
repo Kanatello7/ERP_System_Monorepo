@@ -1,9 +1,6 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pathlib import Path
 
-
-BASE_DIR = Path(__file__).resolve().parents[4] 
-
 class Settings(BaseSettings):
     DB_HOST: str 
     DB_PORT: str    
@@ -24,7 +21,7 @@ class Settings(BaseSettings):
         return [origin for origin in self.CORS_ORIGINS.split(",")]
         
     model_config = SettingsConfigDict(
-        env_file=str(BASE_DIR / ".env"),
+        env_file=str(Path(__file__).resolve().parent / ".env"),  # /app/app/.env
         env_file_encoding="utf-8",
     )
 
